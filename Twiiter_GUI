@@ -1,5 +1,7 @@
+
 import tweepy
 import tkinter as tk
+from tkinter import filedialog
 
 api_key = "jfZZi1So1y9KF4GOTIOfhbnG1"
 api_secret = "PRl8E0EWwEtyg9mqvYrnOchC8BIrbPSsKCIqBChrl7PgoGuxcZ"
@@ -15,21 +17,32 @@ api = tweepy.API(auth)
 # Function to handle tweet button click
 def tweet():
     message = tweet_entry.get()
-    client.create_tweet(text=message)
+    image_path = image_path_entry.get()
+    if image_path:
+        api.update_with_media(image_path, status=message)
+    else:
+        api.update_status(message)
     tweet_entry.delete(0, tk.END)
+    image_path_entry.delete(0, tk.END)
 
 # Function to handle reply button click
 def reply():
     reply_id = reply_id_entry.get()
     reply_text = reply_text_entry.get()
-    client.create_tweet(in_reply_to_tweet_id=reply_id, text=reply_text)
+    api.update_status(status=reply_text, in_reply_to_status_id=reply_id)
     reply_id_entry.delete(0, tk.END)
     reply_text_entry.delete(0, tk.END)
+
+# Function to open file dialog and select image
+def browse_image():
+    file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+    image_path_entry.delete(0, tk.END)
+    image_path_entry.insert(tk.END, file_path)
 
 # Create the GUI window
 window = tk.Tk()
 window.title("Twitter Bot")
-window.geometry("400x300")
+window.geometry("400x400")
 window.configure(bg="#1DA1F2")
 
 # Tweet section
@@ -50,6 +63,39 @@ tweet_entry = tk.Entry(
     relief=tk.SOLID
 )
 tweet_entry.pack(pady=10)
+
+image_label = tk.Label(
+    window,
+    text="Image Path:",
+    font=("Arial", 16),
+    fg="white",
+    bg="#1DA1F2"
+)
+image_label.pack(pady=10)
+
+image_frame = tk.Frame(window, bg="#1DA1F2")
+image_frame.pack(pady=5)
+
+image_path_entry = tk.Entry(
+    image_frame,
+    font=("Arial", 14),
+    width=20,
+    bd=2,
+    relief=tk.SOLID
+)
+image_path_entry.pack(side=tk.LEFT)
+
+browse_button = tk.Button(
+    image_frame,
+    text="Browse",
+    font=("Arial", 12),
+    bg="#ffffff",
+    fg="#1DA1F2",
+    bd=2,
+    relief=tk.SOLID,
+    command=browse_image
+)
+browse_button.pack(side=tk.LEFT, padx=5)
 
 tweet_button = tk.Button(
     window,
