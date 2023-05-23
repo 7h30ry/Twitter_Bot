@@ -1,0 +1,119 @@
+import tweepy
+import tkinter as tk
+
+api_key = "jfZZi1So1y9KF4GOTIOfhbnG1"
+api_secret = "PRl8E0EWwEtyg9mqvYrnOchC8BIrbPSsKCIqBChrl7PgoGuxcZ"
+bearer_token = r"AAAAAAAAAAAAAAAAAAAAAHYsngEAAAAA5a8sALlgDEYm7qtcDi96Sn1R1%2Bw%3DRP4sDWkGSktWR9eqmzK5MfGLQEVsECC8EZVdbffdEcpLzkZPMG"
+access_token = "1505689883414835203-96FBWoW3MFh7q7OWmWoFrk9Mpkq5qo"
+access_token_secret = "CcXUush2eq6dQkzUsz0TYxwcXhI4mHwHPVY0Cyv8xQcmk"
+
+client = tweepy.Client(bearer_token, api_key, api_secret, access_token, access_token_secret)
+auth = tweepy.OAuthHandler(api_key, api_secret)
+auth.set_access_token(access_token, access_token_secret)
+api = tweepy.API(auth)
+
+# Function to handle tweet button click
+def tweet():
+    message = tweet_entry.get()
+    client.create_tweet(text=message)
+    tweet_entry.delete(0, tk.END)
+
+# Function to handle reply button click
+def reply():
+    reply_id = reply_id_entry.get()
+    reply_text = reply_text_entry.get()
+    client.create_tweet(in_reply_to_tweet_id=reply_id, text=reply_text)
+    reply_id_entry.delete(0, tk.END)
+    reply_text_entry.delete(0, tk.END)
+
+# Create the GUI window
+window = tk.Tk()
+window.title("Twitter Bot")
+window.geometry("400x300")
+window.configure(bg="#1DA1F2")
+
+# Tweet section
+tweet_label = tk.Label(
+    window,
+    text="Tweet:",
+    font=("Arial", 16),
+    fg="white",
+    bg="#1DA1F2"
+)
+tweet_label.pack(pady=10)
+
+tweet_entry = tk.Entry(
+    window,
+    font=("Arial", 14),
+    width=30,
+    bd=2,
+    relief=tk.SOLID
+)
+tweet_entry.pack(pady=10)
+
+tweet_button = tk.Button(
+    window,
+    text="Tweet",
+    font=("Arial", 14, "bold"),
+    bg="#ffffff",
+    fg="#1DA1F2",
+    bd=2,
+    relief=tk.SOLID,
+    command=tweet
+)
+tweet_button.pack(pady=10)
+
+# Reply section
+reply_frame = tk.Frame(window, bg="#1DA1F2")
+reply_frame.pack(pady=20)
+
+reply_id_label = tk.Label(
+    reply_frame,
+    text="Reply ID:",
+    font=("Arial", 14),
+    fg="white",
+    bg="#1DA1F2"
+)
+reply_id_label.pack(side=tk.LEFT)
+
+reply_id_entry = tk.Entry(
+    reply_frame,
+    font=("Arial", 14),
+    width=15,
+    bd=2,
+    relief=tk.SOLID
+)
+reply_id_entry.pack(side=tk.LEFT, padx=10)
+
+reply_text_label = tk.Label(
+    window,
+    text="Reply Text:",
+    font=("Arial", 16),
+    fg="white",
+    bg="#1DA1F2"
+)
+reply_text_label.pack(pady=10)
+
+reply_text_entry = tk.Entry(
+    window,
+    font=("Arial", 14),
+    width=30,
+    bd=2,
+    relief=tk.SOLID
+)
+reply_text_entry.pack(pady=10)
+
+reply_button = tk.Button(
+    window,
+    text="Reply",
+    font=("Arial", 14, "bold"),
+    bg="#ffffff",
+    fg="#1DA1F2",
+    bd=2,
+    relief=tk.SOLID,
+    command=reply
+)
+reply_button.pack(pady=10)
+
+# Run the GUI window
+window.mainloop()
