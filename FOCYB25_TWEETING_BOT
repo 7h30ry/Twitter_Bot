@@ -6,11 +6,11 @@ import time
 import tkinter as tk
 
 # Your API keys and tokens
-API_KEY = "plhF5krotNySIoT98u56KN1XV"
-API_SECRET_KEY = "Zz2eTeHyWIU4G6cpMUq2GHvvAdRETJSdc1b06iR1u6B8xpAmnW"
-BEARER_TOKEN = r"AAAAAAAAAAAAAAAAAAAAAPqlnwEAAAAAT2J%2F3XrtixxwY8nNDcP34tL%2FW9k%3Ds7G037wHLNzkqZtflDHwxnnhbITiaid7Uhs7YoF4mees9kXJVR"
-ACCESS_TOKEN = "1664257706696294400-GcnEE3pTIYO0To3yaSQr4hbTDaHcgQ"
-ACCESS_TOKEN_SECRET = "FwBQQ7IPrdiwA4ELjN4xFH8QPfidTw0ZicpAnManEIzJO"
+API_KEY = "..."
+API_SECRET_KEY = "..."
+BEARER_TOKEN = r"..."
+ACCESS_TOKEN = "..."
+ACCESS_TOKEN_SECRET = "..."
 
 # Your tweepy setup
 client = tweepy.Client(BEARER_TOKEN, API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -61,11 +61,11 @@ def run_automated():
 
 # GUI version
 def run_gui():
-    api_key = "plhF5krotNySIoT98u56KN1XV"
-    api_secret = "Zz2eTeHyWIU4G6cpMUq2GHvvAdRETJSdc1b06iR1u6B8xpAmnW"
-    bearer_token = r"AAAAAAAAAAAAAAAAAAAAAPqlnwEAAAAAT2J%2F3XrtixxwY8nNDcP34tL%2FW9k%3Ds7G037wHLNzkqZtflDHwxnnhbITiaid7Uhs7YoF4mees9kXJVR"
-    access_token = "1664257706696294400-GcnEE3pTIYO0To3yaSQr4hbTDaHcgQ"
-    access_token_secret = "FwBQQ7IPrdiwA4ELjN4xFH8QPfidTw0ZicpAnManEIzJO"
+    api_key = "..."
+    api_secret = "..."
+    bearer_token = r"..."
+    access_token = "..."
+    access_token_secret = "..."
 
     client = tweepy.Client(bearer_token, api_key, api_secret, access_token, access_token_secret)
     auth = tweepy.OAuthHandler(api_key, api_secret)
