@@ -1,0 +1,191 @@
+import tweepy
+import requests
+from bs4 import BeautifulSoup
+from datetime import date, datetime
+import time
+import tkinter as tk
+
+# Your API keys and tokens
+API_KEY = "plhF5krotNySIoT98u56KN1XV"
+API_SECRET_KEY = "Zz2eTeHyWIU4G6cpMUq2GHvvAdRETJSdc1b06iR1u6B8xpAmnW"
+BEARER_TOKEN = r"AAAAAAAAAAAAAAAAAAAAAPqlnwEAAAAAT2J%2F3XrtixxwY8nNDcP34tL%2FW9k%3Ds7G037wHLNzkqZtflDHwxnnhbITiaid7Uhs7YoF4mees9kXJVR"
+ACCESS_TOKEN = "1664257706696294400-GcnEE3pTIYO0To3yaSQr4hbTDaHcgQ"
+ACCESS_TOKEN_SECRET = "FwBQQ7IPrdiwA4ELjN4xFH8QPfidTw0ZicpAnManEIzJO"
+
+# Your tweepy setup
+client = tweepy.Client(BEARER_TOKEN, API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+auth = tweepy.OAuth1UserHandler(API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+api = tweepy.API(auth)
+
+post_contents = []
+
+# A function to scrape content from The hackers news website
+def scrape_website():
+    response = requests.get("https://thehackernews.com/")
+    html_content = response.content
+    soup = BeautifulSoup(html_content, "html.parser")
+    articles = soup.find_all("div", class_="body-post")
+    today = date.today().strftime("%b %d, %Y")
+
+    for article in articles:
+        post_date = article.find("div", class_="item-label").text.strip()
+        if str(today) in post_date:
+            title = article.find("h2", class_="home-title").text.strip()
+            url = article.find("a")["href"]
+            body = article.find("div", class_="home-desc").text.strip()
+            post_content = {"title": title, "url": url, "body": body}
+            post_contents.append(post_content)
+    return post_contents
+
+# A function to Posts a blog post on Twitter and removes it from the list.
+def post_to_twitter(post):
+    tweet = f"{post['title']}\n\n{post['url']}"
+    client.create_tweet(text=tweet)
+    print("Successfully posted a blog post on Twitter.")
+    post_contents.remove(post)
+
+# Automated version
+def run_automated():
+    post_interval = 180  # Post every hour (in seconds)
+    rescape_interval = 60 * 60 * 6  # Rescrape every 6 hours (in seconds)
+    end_time = datetime.now().replace(hour=23, minute=59, second=59)
+
+    while datetime.now() < end_time:
+        post_contents = scrape_website()
+        while post_contents:
+            post = post_contents[0]
+            post_to_twitter(post)
+            time.sleep(post_interval)
+
+        time.sleep(rescape_interval)
+
+# GUI version
+def run_gui():
+    api_key = "plhF5krotNySIoT98u56KN1XV"
+    api_secret = "Zz2eTeHyWIU4G6cpMUq2GHvvAdRETJSdc1b06iR1u6B8xpAmnW"
+    bearer_token = r"AAAAAAAAAAAAAAAAAAAAAPqlnwEAAAAAT2J%2F3XrtixxwY8nNDcP34tL%2FW9k%3Ds7G037wHLNzkqZtflDHwxnnhbITiaid7Uhs7YoF4mees9kXJVR"
+    access_token = "1664257706696294400-GcnEE3pTIYO0To3yaSQr4hbTDaHcgQ"
+    access_token_secret = "FwBQQ7IPrdiwA4ELjN4xFH8QPfidTw0ZicpAnManEIzJO"
+
+    client = tweepy.Client(bearer_token, api_key, api_secret, access_token, access_token_secret)
+    auth = tweepy.OAuthHandler(api_key, api_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
+
+    # Function to handle tweet button click
+    def tweet():
+        message = tweet_entry.get()
+        client.create_tweet(text=message)
+        tweet_entry.delete(0, tk.END)
+
+    # Function to handle reply button click
+    def reply():
+        reply_id = reply_id_entry.get()
+        reply_text = reply_text_entry.get()
+        client.create_tweet(in_reply_to_tweet_id=reply_id, text=reply_text)
+        reply_id_entry.delete(0, tk.END)
+        reply_text_entry.delete(0, tk.END)
+
+    # Create the GUI window
+    window = tk.Tk()
+    window.title("Twitter Bot")
+    window.geometry("400x300")
+    window.configure(bg="#1DA1F2")
+
+    # Tweet section
+    tweet_label = tk.Label(
+        window,
+        text="Tweet:",
+        font=("Arial", 16),
+        fg="white",
+        bg="#1DA1F2"
+    )
+    tweet_label.pack(pady=10)
+
+    tweet_entry = tk.Entry(
+        window,
+        font=("Arial", 14),
+        width=30,
+        bd=2,
+        relief=tk.SOLID
+    )
+    tweet_entry.pack(pady=10)
+
+    tweet_button = tk.Button(
+        window,
+        text="Tweet",
+        font=("Arial", 14, "bold"),
+        bg="#ffffff",
+        fg="#1DA1F2",
+        bd=2,
+        relief=tk.SOLID,
+        command=tweet
+    )
+    tweet_button.pack(pady=10)
+
+    # Reply section
+    reply_frame = tk.Frame(window, bg="#1DA1F2")
+    reply_frame.pack(pady=20)
+
+    reply_id_label = tk.Label(
+        reply_frame,
+        text="Reply ID:",
+        font=("Arial", 14),
+        fg="white",
+        bg="#1DA1F2"
+    )
+    reply_id_label.pack(side=tk.LEFT)
+
+    reply_id_entry = tk.Entry(
+        reply_frame,
+        font=("Arial", 14),
+        width=15,
+        bd=2,
+        relief=tk.SOLID
+    )
+    reply_id_entry.pack(side=tk.LEFT, padx=10)
+
+    reply_text_label = tk.Label(
+        window,
+        text="Reply Text:",
+        font=("Arial", 16),
+        fg="white",
+        bg="#1DA1F2"
+    )
+    reply_text_label.pack(pady=10)
+
+    reply_text_entry = tk.Entry(
+        window,
+        font=("Arial", 14),
+        width=30,
+        bd=2,
+        relief=tk.SOLID
+    )
+    reply_text_entry.pack(pady=10)
+
+    reply_button = tk.Button(
+        window,
+        text="Reply",
+        font=("Arial", 14, "bold"),
+        bg="#ffffff",
+        fg="#1DA1F2",
+        bd=2,
+        relief=tk.SOLID,
+        command=reply
+    )
+    reply_button.pack(pady=10)
+
+    # Run the GUI window
+    window.mainloop()
+
+# Ask the user which version to run
+while True:
+    choice = input("Which version do you want to run? Enter 'automated' or 'gui': ")
+    if choice.lower() == 'automated':
+        run_automated()
+        break
+    elif choice.lower() == 'gui':
+        run_gui()
+        break
+    else:
+        print("Invalid choice. Please enter 'automated' or 'gui'.")
